@@ -12,5 +12,8 @@
     "@testcontainers/selenium": "^10.2.2",
     "mocha": "^10.2.0",
     "selenium-webdriver": "^4.15.0"
+  },
+  "dependencies": {
+    "chai": "^4.3.10"
   }
 }
