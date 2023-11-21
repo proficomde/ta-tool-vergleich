@@ -156,3 +156,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# recordings
+*.mp4
