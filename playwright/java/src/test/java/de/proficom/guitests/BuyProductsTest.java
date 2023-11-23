@@ -15,7 +15,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 public class BuyProductsTest {
 
     static final String URL = "https://www.advantageonlineshopping.com/#/";
-    static final boolean HEADLESS_MODE = false;
+    static final boolean HEADLESS_MODE = true;
     static final boolean TAKE_SCREENSHOTS = false;
     static final boolean TAKE_RECORDING = false;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";

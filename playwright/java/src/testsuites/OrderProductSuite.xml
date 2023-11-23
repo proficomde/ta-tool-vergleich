@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="GUITestSuite">
+    <test name="Playwright">
+        <classes>
+            <class name="de.proficom.guitests.BuyProductsTest"/>
+        </classes>
+    </test>
+</suite>
