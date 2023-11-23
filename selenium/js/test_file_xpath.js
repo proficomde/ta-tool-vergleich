@@ -50,10 +50,10 @@ describe('AOS-TestScript', function() {
 
 
   it('check empty cart', async function() {
-    let cartBtn = await driver.findElement(By.id("shoppingCartLink"));
+    let cartBtn = await driver.findElement(By.xpath("//a[@id='shoppingCartLink']"));
     await cartBtn.click();
 
-    let shoppingCartTxt = await driver.findElement(By.id("shoppingCart"));
+    let shoppingCartTxt = await driver.findElement(By.xpath("//div[@id='shoppingCart']"));
     await driver.wait(until.elementIsVisible(shoppingCartTxt, 2000));
     assert.expect(await shoppingCartTxt.getText()).to.include("Your shopping cart is empty")
     
@@ -67,9 +67,9 @@ describe('AOS-TestScript', function() {
     let homeBtn = driver.findElement(By.xpath("//a[@translate='HOME']"))
     await homeBtn.click();
 
-    await driver.findElement(By.id("miceImg")).click();
+    await driver.findElement(By.xpath("//div[@class='shop_now_slider']/span[text()='MICE']")).click();
 
-    let filterMenu = await driver.findElement(By.id("mobileSlide")).findElement(By.xpath(".//ul/li[2]"))
+    let filterMenu = await driver.findElement(By.xpath("//div[@id='mobileSlide']//ul/li[2]"))
     await filterMenu.click()
 
 
@@ -89,17 +89,17 @@ describe('AOS-TestScript', function() {
     TAKE_SCREENSHOT ? await driver.takeScreenshot().then((image) => saveScreenShot(image, "02_filtered_mice.png")): null
 
 
-    await productCatalog.findElement(By.linkText(productName)).click();
+    await productCatalog.findElement(By.xpath(`//a[./text()='${productName}']`)).click();
     await driver.findElement(By.xpath("//div[./h2/@translate='Color']//span[@title='RED']")).click();
     
-    await driver.findElement(By.name("save_to_cart")).click();
+    await driver.findElement(By.xpath("//button[@name='save_to_cart']")).click();
   });
 
   it('buy offer', async function() {
     productName = products[1].prodName
     await driver.findElement(By.xpath("//a[@translate='HOME']")).click();
 
-    let popularItemsWe = await driver.findElement(By.id("popular_items"))
+    let popularItemsWe = await driver.findElement(By.xpath("//article[@id='popular_items']"))
     await actions.scroll(0,0,0,0, popularItemsWe).perform();
 
     TAKE_SCREENSHOT ? await driver.takeScreenshot().then((image) => saveScreenShot(image, "03_scroll_viewport.png")): null
@@ -111,12 +111,12 @@ describe('AOS-TestScript', function() {
     await quantityInput.click()
     await quantityInput.sendKeys(products[1].prodAmount)
 
-    await driver.findElement(By.name("save_to_cart")).click();
+    await driver.findElement(By.xpath("//button[@name='save_to_cart']")).click();
   });
 
   it('check filled shopping cart', async function() {
 
-    await driver.findElement(By.id("shoppingCartLink")).click();
+    await driver.findElement(By.xpath("//a[@id='shoppingCartLink']")).click();
 
     let shoppingCartTbl = driver.findElement(By.xpath("//article//div[@id='shoppingCart']/table"));
     await driver.wait(until.elementIsVisible(shoppingCartTbl, 2000));
@@ -134,8 +134,8 @@ describe('AOS-TestScript', function() {
   });
 
   it('register new user', async function() {
-    await driver.findElement(By.id("checkOutButton")).click();
-    await driver.findElement(By.id("registration_btn")).click();
+    await driver.findElement(By.xpath("//button[@id='checkOutButton']")).click();
+    await driver.findElement(By.xpath("//button[@id='registration_btn']")).click();
 
     let registrationForm = driver.findElement(By.xpath("//div[@id='form']"))
     await registrationForm.findElement(By.xpath(".//input[@name='usernameRegisterPage']")).sendKeys(`pc${formatDate(new Date(), "YYMMDDhhmmss")}`)
