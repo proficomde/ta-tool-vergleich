@@ -3,6 +3,9 @@ package de.proficom.guitests;
 import com.microsoft.playwright.*;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,16 +17,34 @@ public class BuyProductsTest {
     static final String URL = "https://www.advantageonlineshopping.com/#/";
     static final boolean HEADLESS_MODE = false;
     static final boolean TAKE_SCREENSHOTS = false;
+    static final boolean TAKE_RECORDING = false;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
     @Test
     public void RunTestCase() {
+        LocalDateTime timeNowTestStart = LocalDateTime.now();
+
         Playwright playwright = Playwright.create();
         Browser browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(HEADLESS_MODE)
         );
-        Page page = browser.newPage();
+
+        BrowserContext browserContext;
+        Page page;
+
+        if (TAKE_RECORDING) {
+            browserContext = browser.newContext(new Browser.NewContextOptions()
+                    .setRecordVideoDir(Paths.get("recordings/"))
+            );
+            page = browserContext.newPage();
+
+        } else {
+            page = browser.newPage();
+        }
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+
         // STEP 0   - Go to home page
         page.navigate(URL);
 
@@ -68,9 +89,10 @@ public class BuyProductsTest {
         assertThat(product2Name).isVisible();
         Locator totalCost = page.locator("//span[contains(text(), 'TOTAL')]/..//span[2][contains(text(), '$')]");
         assertThat(totalCost).hasText("$399.97");
+
         if (TAKE_SCREENSHOTS) {
             page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get("shopping_cart.png"))
+                    .setPath(Paths.get("screenshots/shopping_cart_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png"))
                     .setFullPage(true));
         }
 
@@ -79,9 +101,8 @@ public class BuyProductsTest {
         // STEP 6.2 - Create new user
         page.locator("//button[@id='registration_btn']").click();
         // Create username in format: pc<date><hour> //pc<YYMMDD><hhmmss>
-        LocalDateTime timeNow = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
-        page.locator("//input[@name='usernameRegisterPage']").fill("pc"+timeNow.format(dateTimeFormatter));
+        LocalDateTime timeNowUserRegistration = LocalDateTime.now();
+        page.locator("//input[@name='usernameRegisterPage']").fill("pc"+timeNowUserRegistration.format(dateTimeFormatter));
         page.locator("//input[@name='emailRegisterPage']").fill("a.b@c.de");
         page.locator("//input[@name='passwordRegisterPage']").fill("Pc12345");
         page.locator("//input[@name='confirm_passwordRegisterPage']").fill("Pc12345");
@@ -94,7 +115,7 @@ public class BuyProductsTest {
 
         if (TAKE_SCREENSHOTS) {
             page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get("user_registration.png"))
+                    .setPath(Paths.get("screenshots/user_details_"+timeNowTestStart.format(dateTimeFormatter)+".png"))
                     .setFullPage(true));
         }
 
@@ -118,19 +139,26 @@ public class BuyProductsTest {
         Locator cardNumberInput = page.locator("//input[@name='card_number']");
         cardNumberInput.click();
         page.locator("//input[@name='card_number' and contains(@class, 'in-focus')]").waitFor();
-        cardNumberInput.pressSequentially("123456789123");
-
-        Locator cvvNumberInput = page.locator("//input[@name='cvv_number']");
-        cvvNumberInput.click();
-        page.locator("//input[@name='cvv_number' and contains(@class, 'in-focus')]").waitFor();
 
         // Possible bug in Advantage Online Shop, maybe even intentionally:
         // After clicking in card number field and filling data, the next input after click in CVV field
         // will be ignored/skipped and not be displayed correctly. Inspecting the input field element gave this result:
         //  =>  Only after class attribute 'ng-dirty' has been set, which is typically after the first input symbol,
         //      following inputs are accepted for the CVV field.
+        if (!cardNumberInput.getAttribute("class").contains("dirty")) {
+            cardNumberInput.pressSequentially("1");
+            // Fallback cleanup of input in case the hacky method is redundant
+            cardNumberInput.press("Backspace");
+        }
+        cardNumberInput.pressSequentially("123456789123");
+
+        Locator cvvNumberInput = page.locator("//input[@name='cvv_number']");
+        cvvNumberInput.click();
+        page.locator("//input[@name='cvv_number' and contains(@class, 'in-focus')]").waitFor();
+
         if (!cvvNumberInput.getAttribute("class").contains("dirty")) {
             cvvNumberInput.pressSequentially("1");
+            cardNumberInput.press("Backspace");
         }
         cvvNumberInput.pressSequentially("123");
 
@@ -148,9 +176,23 @@ public class BuyProductsTest {
 
         if (TAKE_SCREENSHOTS) {
             page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get("order_summary.png"))
+                    .setPath(Paths.get("screenshots/order_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png"))
                     .setFullPage(true));
         }
+
+        page.close();
+        if (TAKE_RECORDING) {
+            browserContext.close();
+            String originalRecordingPath = page.video().path().toString();
+            File newRecordingFile = new File("recordings/", "screen_recording_"+timeNowTestStart.format(dateTimeFormatter)+".webm");
+            try {
+                Files.move(Paths.get(originalRecordingPath), newRecordingFile.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        browser.close();
+        playwright.close();
 
     }
 }
