@@ -9,6 +9,7 @@
 - [Integrierung mit Selenium Grid](https://playwright.dev/java/docs/selenium-grid#introduction) möglich
 - Interne Auto-Waits standardmäßig 30 Sekunden lang, wartend bis das Element [sichtbar](https://playwright.dev/java/docs/actionability#visible) wird
 - Verglichen mit Selenium wirkt die Ausführung im "Headed Mode" mit Playwright subjektiv performanter/schneller
+- Integrierte [Assertions](https://playwright.dev/java/docs/test-assertions)
 
 ### Selenium vs Playwright
 
