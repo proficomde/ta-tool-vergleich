@@ -51,6 +51,12 @@ public class BuyProductsTest {
         // STEP 1   - Check if shopping cart is empty
         page.locator("//a[@id='shoppingCartLink']").click();
         Locator emptyText = page.locator("//div[@id='shoppingCart']/div/label[@translate='Your_shopping_cart_is_empty']");
+
+        if (TAKE_SCREENSHOTS) {
+            page.screenshot(new Page.ScreenshotOptions()
+                    .setPath(Paths.get("screenshots/empty_shopping_cart_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
+        }
+
         assertThat(emptyText).hasText("Your shopping cart is empty");
 
         // STEP 2.1 - Go to home page category 'Mice'
@@ -60,6 +66,14 @@ public class BuyProductsTest {
         page.locator("//li[contains(@*, 'attributesToShow')][.//*[contains(text(), 'SCROLLER TYPE')]]").click();
         page.locator("//label[text()='Scroll Ball']/../input").check();
         page.locator("//label[text()='Scroll Ring']/../input").check();
+
+        if (TAKE_SCREENSHOTS) {
+            // We need to wait for JavaScript to apply the filter correctly
+            page.waitForCondition(() -> page.locator("//*[contains(@class, 'productName')]").count() == 2);
+            page.screenshot(new Page.ScreenshotOptions()
+                    .setPath(Paths.get("screenshots/filter_applied_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
+        }
+
         // STEP 2.3 - Click item 'KENSINGTON ORGIT 72352 TRACKBALL'
         page.locator("//a[contains(@class, 'productName') and text()='"+PRODUCT1_NAME+"']").click();
         // STEP 2.4 - Choose color 'red'
@@ -72,6 +86,12 @@ public class BuyProductsTest {
 
         // STEP 4.1 - Scroll to popular items
         page.locator("//article[@id='popular_items']").scrollIntoViewIfNeeded();
+
+        if (TAKE_SCREENSHOTS) {
+            page.screenshot(new Page.ScreenshotOptions()
+                    .setPath(Paths.get("screenshots/popular_items_view_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
+        }
+
         // STEP 4.2 - Choose item 'HP ROAR PLUS WIRELESS SPEAKER'
         page.locator("//article[@id='popular_items']//div[starts-with(@name, 'popular_item')][.//*[contains(@class, 'productName') and text()='"+PRODUCT2_NAME+"']]//label[contains(@class, 'viewDetail')]").click();
         // STEP 4.3 - Put amount of '2'
@@ -92,8 +112,7 @@ public class BuyProductsTest {
 
         if (TAKE_SCREENSHOTS) {
             page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get("screenshots/shopping_cart_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png"))
-                    .setFullPage(true));
+                    .setPath(Paths.get("screenshots/shopping_cart_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
         }
 
         // STEP 6.1 - Go to checkout
@@ -112,12 +131,6 @@ public class BuyProductsTest {
         page.locator("//input[@name='cityRegisterPage']").fill("Dresden");
         page.locator("//input[@name='allowOffersPromotion']").uncheck();
         page.locator("//input[@name='i_agree']").check();
-
-        if (TAKE_SCREENSHOTS) {
-            page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get("screenshots/user_details_"+timeNowTestStart.format(dateTimeFormatter)+".png"))
-                    .setFullPage(true));
-        }
 
         page.locator("//button[@id='register_btn']").click();
         // STEP 6.3 - Check if shipping details are correct
@@ -173,12 +186,6 @@ public class BuyProductsTest {
         Locator orderNumberLabel = page.locator("//label[@id='orderNumberLabel' and string-length(text())>0]");
         System.out.println("Tracking number: "+trackingNumberLabel.textContent());
         System.out.println("Order number: "+orderNumberLabel.textContent());
-
-        if (TAKE_SCREENSHOTS) {
-            page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get("screenshots/order_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png"))
-                    .setFullPage(true));
-        }
 
         page.close();
         if (TAKE_RECORDING) {
