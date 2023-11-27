@@ -15,6 +15,7 @@
 - Verglichen mit Selenium wirkt die Ausführung im "Headed Mode" mit Playwright subjektiv performanter/schneller
 - Integrierte [Assertions](https://playwright.dev/java/docs/test-assertions)
 - Testfallerstellung sehr intuitiv, wenn Vorerfahrung mit Selenium vorhanden ist (eigene Vorerfahrung: 2-tägiger Workshop mit Selenium)
+- Subjektive Präferenz bei Wahlmöglichkeit zwischen Selenium und Playwright: Playwright statt Selenium
 
 ## Selenium vs Playwright
 

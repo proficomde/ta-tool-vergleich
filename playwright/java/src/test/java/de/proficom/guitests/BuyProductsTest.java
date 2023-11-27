@@ -132,6 +132,11 @@ public class BuyProductsTest {
         page.locator("//input[@name='allowOffersPromotion']").uncheck();
         page.locator("//input[@name='i_agree']").check();
 
+        if (TAKE_SCREENSHOTS) {
+            page.locator("//div[@id='form']").screenshot(new Locator.ScreenshotOptions()
+                    .setPath(Paths.get("screenshots/registration_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
+        }
+
         page.locator("//button[@id='register_btn']").click();
         // STEP 6.3 - Check if shipping details are correct
         Locator userNameLabel = page.locator("//div[@id='userDetails']//label[text()='profi Worker']");

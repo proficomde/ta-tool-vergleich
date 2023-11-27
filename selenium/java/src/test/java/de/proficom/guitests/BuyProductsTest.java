@@ -60,7 +60,7 @@ public class BuyProductsTest {
         WebElement emptyText = driver.findElement(By.xpath("//div[@id='shoppingCart']/div/label[@translate='Your_shopping_cart_is_empty']"));
 
         if (TAKE_SCREENSHOTS) {
-            takeScreenshot(driver, "screenshots/empty_shopping_cart_"+timeNowTestStart.format(dateTimeFormatter)+".png");
+            takeScreenshotFromDriver(driver, "screenshots/empty_shopping_cart_"+timeNowTestStart.format(dateTimeFormatter)+".png");
         }
 
         Assert.assertEquals(emptyText.getText(), "Your shopping cart is empty");
@@ -81,7 +81,7 @@ public class BuyProductsTest {
                     if (elementCount == 2) return true; else return false;
                 }
             });
-            takeScreenshot(driver, "screenshots/filter_applied_"+timeNowTestStart.format(dateTimeFormatter)+".png");
+            takeScreenshotFromDriver(driver, "screenshots/filter_applied_"+timeNowTestStart.format(dateTimeFormatter)+".png");
         }
 
         // STEP 2.3 - Click item 'KENSINGTON ORGIT 72352 TRACKBALL'
@@ -99,7 +99,7 @@ public class BuyProductsTest {
         actions.moveToElement(driver.findElement(By.xpath("//article[@id='popular_items']")));
 
         if (TAKE_SCREENSHOTS) {
-            takeScreenshot(driver, "screenshots/popular_items_view_"+timeNowTestStart.format(dateTimeFormatter)+".png");
+            takeScreenshotFromDriver(driver, "screenshots/popular_items_view_"+timeNowTestStart.format(dateTimeFormatter)+".png");
         }
 
         // STEP 4.2 - Choose item 'HP ROAR PLUS WIRELESS SPEAKER'
@@ -121,7 +121,7 @@ public class BuyProductsTest {
         Assert.assertEquals(totalCost.getText(), "$399.97");
 
         if (TAKE_SCREENSHOTS) {
-            takeScreenshot(driver, "screenshots/shopping_cart_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png");
+            takeScreenshotFromDriver(driver, "screenshots/shopping_cart_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png");
         }
 
         // STEP 6.1 - Go to checkout
@@ -140,6 +140,11 @@ public class BuyProductsTest {
         countrySelect.selectByVisibleText("Germany");
         driver.findElement(By.xpath("//input[@name='cityRegisterPage']")).sendKeys("Dresden");
         driver.findElement(By.xpath("//input[@name='allowOffersPromotion']")).click();
+
+        if (TAKE_SCREENSHOTS) {
+            takeScreenshotFromWebElement(driver.findElement(By.xpath("//div[@id='form']")), "screenshots/registration_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png");
+        }
+
         driver.findElement(By.xpath("//input[@name='i_agree']")).click();
 
         driver.findElement(By.xpath("//button[@id='register_btn']")).click();
@@ -198,8 +203,13 @@ public class BuyProductsTest {
         System.out.println("Order number: "+orderNumberLabel.getText());
     }
 
-    public static void takeScreenshot(WebDriver driver, String path) throws IOException {
+    public static void takeScreenshotFromDriver(WebDriver driver, String path) throws IOException {
         File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(src, new File(path));
+    }
+
+    public static void takeScreenshotFromWebElement(WebElement element, String path) throws IOException {
+        File src = element.getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(src, new File(path));
     }
 }
