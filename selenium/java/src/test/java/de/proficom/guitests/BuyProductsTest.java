@@ -23,9 +23,8 @@ import java.time.format.DateTimeFormatter;
 public class BuyProductsTest {
 
     static final String URL = "https://www.advantageonlineshopping.com/#/";
-    static final boolean HEADLESS_MODE = false;
-    static final boolean TAKE_SCREENSHOTS = true;
-    static final boolean TAKE_RECORDING = false;
+    static final boolean HEADLESS_MODE = true;
+    static final boolean TAKE_SCREENSHOTS = false;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
@@ -52,8 +51,6 @@ public class BuyProductsTest {
     public void RunTestCase() throws Exception{
         LocalDateTime timeNowTestStart = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
-
-        // TODO: start video recording
 
         // STEP 0   - Go to home page
         driver.get(URL);
@@ -199,7 +196,6 @@ public class BuyProductsTest {
         WebElement orderNumberLabel = driver.findElement(By.xpath("//label[@id='orderNumberLabel' and string-length(text())>0]"));
         System.out.println("Tracking number: "+trackingNumberLabel.getText());
         System.out.println("Order number: "+orderNumberLabel.getText());
-
     }
 
     public static void takeScreenshot(WebDriver driver, String path) throws IOException {
