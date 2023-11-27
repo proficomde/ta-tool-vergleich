@@ -2,7 +2,7 @@
 //import required libraries
 const { SeleniumContainer } = require("@testcontainers/selenium");
 const assert = require('chai')
-const { By, Builder, Select, until } = require("selenium-webdriver");
+const { By, Builder, Select, until, Key} = require("selenium-webdriver");
 
 
 //set test case specific variables
@@ -15,6 +15,9 @@ describe('AOS-TestScript', function() {
   let actions;
   this.bail(true)
   this.timeout(60000);
+
+  let beforeBrowserStartTS
+  let beforeTestStartTS
 
   products = [ {prodName: 'Kensington Orbit 72352 Trackball', prodAmount: 1} , {prodName: 'HP ROAR PLUS WIRELESS SPEAKER', prodAmount: 2}]
 
@@ -34,6 +37,9 @@ describe('AOS-TestScript', function() {
     }})
       .withRecording()
       .start();
+
+    beforeBrowserStartTS = Date.now()
+    
     driver = await new Builder()
               .forBrowser('chrome')
               .usingServer(container.getServerUrl())
@@ -45,7 +51,8 @@ describe('AOS-TestScript', function() {
 
   it('Open Browser', async function() {
     console.log("run test")
-    await driver.get(baseURI);    
+    await driver.get(baseURI);   
+    beforeTestStartTS = Date.now()
   });
 
 
@@ -134,31 +141,109 @@ describe('AOS-TestScript', function() {
   });
 
   it('register new user', async function() {
+
+    firstName = "Profi"
+    lastName = "Worker"
+
+    city = "Dresden"
+    country = "Germany"
+
     await driver.findElement(By.xpath("//button[@id='checkOutButton']")).click();
     await driver.findElement(By.xpath("//button[@id='registration_btn']")).click();
 
     let registrationForm = driver.findElement(By.xpath("//div[@id='form']"))
-    await registrationForm.findElement(By.xpath(".//input[@name='usernameRegisterPage']")).sendKeys(`pc${formatDate(new Date(), "YYMMDDhhmmss")}`)
-    await registrationForm.findElement(By.xpath(".//input[@name='emailRegisterPage']")).sendKeys('a.b@c.de')
+      await registrationForm.findElement(By.xpath(".//input[@name='usernameRegisterPage']")).sendKeys(`pc${formatDate(new Date(), "YYMMDDhhmmss")}`)
+      await registrationForm.findElement(By.xpath(".//input[@name='emailRegisterPage']")).sendKeys('a.b@c.de')
 
-    await registrationForm.findElement(By.xpath(".//input[@name='passwordRegisterPage']")).sendKeys('Pc12345')
-    await registrationForm.findElement(By.xpath(".//input[@name='confirm_passwordRegisterPage']")).sendKeys('Pc12345')
+      await registrationForm.findElement(By.xpath(".//input[@name='passwordRegisterPage']")).sendKeys('Pc12345')
+      await registrationForm.findElement(By.xpath(".//input[@name='confirm_passwordRegisterPage']")).sendKeys('Pc12345')
 
-    await registrationForm.findElement(By.xpath(".//input[@name='first_nameRegisterPage']")).sendKeys('Profi')
-    await registrationForm.findElement(By.xpath(".//input[@name='last_nameRegisterPage']")).sendKeys('Worker')
+      await registrationForm.findElement(By.xpath(".//input[@name='first_nameRegisterPage']")).sendKeys(firstName)
+      await registrationForm.findElement(By.xpath(".//input[@name='last_nameRegisterPage']")).sendKeys(lastName)
 
-    let countrySelect = new Select (await registrationForm.findElement(By.xpath(".//select[@name='countryListboxRegisterPage']")))
-    await countrySelect.selectByVisibleText("Germany")
-    await registrationForm.findElement(By.xpath(".//input[@name='cityRegisterPage']")).sendKeys('Dresden')
+      let countrySelect = new Select (await registrationForm.findElement(By.xpath(".//select[@name='countryListboxRegisterPage']")))
+      await countrySelect.selectByVisibleText(country)
+      await registrationForm.findElement(By.xpath(".//input[@name='cityRegisterPage']")).sendKeys(city)
 
-    // interaction with checkboxes can only by done by clicking
+      // interaction with checkboxes can only by done by clicking
+      // no function to select/unselect by value
+      await registrationForm.findElement(By.xpath(".//input[@name='allowOffersPromotion']")).click()
+      await registrationForm.findElement(By.xpath(".//input[@name='i_agree']")).click()
     
-    await registrationForm.findElement(By.xpath(".//input[@name='allowOffersPromotion']")).click()
+      TAKE_SCREENSHOT ? await registrationForm.takeScreenshot().then((image) => saveScreenShot(image, "04.5_registrationForm_big.png")): null 
+
+    let registrationButton = await driver.findElement(By.xpath(".//button[@id='register_btn']"))
+    driver.wait(until.elementIsEnabled(registrationButton), 2000)
+    await registrationButton.click()
+
+
+    let userSection = await driver.findElement(By.xpath("//article/div[@id='orderPayment']//div[@id='userSection']"))
+    driver.wait(until.elementIsVisible(userSection))
+
+
+    TAKE_SCREENSHOT ? await driver.takeScreenshot().then((image) => saveScreenShot(image, "05_userDetails.png")) : null
+
+    assert.expect(await userSection.findElement(By.xpath(".//div[./img/@alt='user']/label")).getText()).to.equal(`${firstName} ${lastName}`)
+    assert.expect(await userSection.findElement(By.xpath(".//div[./div/@class='iconCss iconHome']")).getText()).to.equal(`${city}\n${country}`)
   });
+
+  it('initiate payment', async function() {
+
+    await driver.findElement(By.xpath("//button[@id='next_btn']")).click();
+    
+    let paymentMethod = await driver.findElement(By.xpath("//div[@id='paymentMethod']"))
+      await paymentMethod.findElement(By.xpath(".//input[@type='radio' and @name='masterCredit']")).click()
+
+      let cardNumber = await paymentMethod.findElement(By.xpath(".//input[@name='card_number']"))  
+      while(!(await cardNumber.getAttribute("class")).includes("dirty")) {
+        await cardNumber.sendKeys("1")
+        await cardNumber.sendKeys(Key.BACK_SPACE)
+      }
+
+      
+      let cvvNumber = await paymentMethod.findElement(By.xpath(".//input[@name='cvv_number']"))      
+      
+      while(!(await cvvNumber.getAttribute("class")).includes("dirty")) {
+        await cvvNumber.sendKeys("1")
+        await cvvNumber.sendKeys(Key.BACK_SPACE)
+      }
+      await paymentMethod.click()
+      await driver.wait(until.elementLocated(By.xpath("//div[@id='paymentMethod']//input[@name='card_number']/../label[@class='invalid']")))
+      await paymentMethod.click()
+      await driver.wait(until.elementLocated(By.xpath("//div[@id='paymentMethod']//input[@name='cvv_number']/../label[@class='invalid']")))
+
+      await cardNumber.sendKeys(`123456789123`)
+      await cvvNumber.sendKeys(`123${Key.chord(Key.CONTROL, "a")}123`)
+      let expMonthSelect = new Select(await paymentMethod.findElement(By.xpath(".//select[@name='mmListbox']")))
+      let expYearSelect = new Select(await paymentMethod.findElement(By.xpath(".//select[@name='yyyyListbox']")))
+
+      expMonthSelect.selectByVisibleText("04")
+      expYearSelect.selectByVisibleText("2031")
+
+      await paymentMethod.findElement(By.xpath(".//input[@name='cardholder_name']")).sendKeys("proficom")
+
+    await driver.findElement(By.xpath("//button[@id='pay_now_btn_ManualPayment']")).click()
+
+    driver.wait(until.elementIsVisible(await driver.findElement(By.xpath("//div[@class!='ng-hide' and ./div/@id='orderPaymentSuccess']")), 2000))
+
+    TAKE_SCREENSHOT ? await driver.takeScreenshot().then((image) => saveScreenShot(image, "06_sucessfullOrder.png")) : null
+
+    console.log(`Tracking Number: ${await driver.findElement(By.xpath("//label[@id='trackingNumberLabel']")).getText()}`)
+    console.log(`Tracking Number: ${await driver.findElement(By.xpath("//label[@id='orderNumberLabel']")).getText()}`)
+  })
 
 
   after('Clean up', async function() {
     this.timeout(60000)
+
+    let testStoppedTS = Date.now()
+    testRunTimeWithBrowser = testStoppedTS - beforeBrowserStartTS
+    testRunTime = testStoppedTS - beforeTestStartTS
+
+    //write times to text-file for later processing
+    console.log(`${testRunTimeWithBrowser}\t${testRunTime}`)
+    require('fs').appendFileSync("timings.csv", `${testRunTimeWithBrowser}\t${testRunTime}\n`, "utf-8")
+
 
     await new Promise(r => setTimeout(r, 2000));
     const stoppedContainer = await container.stop();
