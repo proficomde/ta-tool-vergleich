@@ -1,6 +1,6 @@
 # Selenium (Java)
 
-### Developer Notes
+## Developer Notes
 
 - Im Vergleich zu Playwright müssen in Selenium einige Funktionen selbst gebaut oder "umständlich" gebaut werden, Beispiel beim Speichern von Screenshots, explizites Warten auf das Erscheinen von 2 Elementen (siehe `new ExpectedCondition<Boolean>()`) oder Select von Dropdown Menüs
 - Recording von Testausführung
