@@ -13,8 +13,8 @@ describe('Advantage Online Shopping', () => {
   const CVS = "123"
   const CCnumber = "123456789123"
   
-  // const screenshot = Cypress.env('screenshot')
-  const screenshot = true
+  const screenshot = Cypress.env('screenshot')
+  // const screenshot = true
 
 
   it('AOS', () => {
