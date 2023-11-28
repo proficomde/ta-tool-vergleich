@@ -5,8 +5,8 @@ stage ("Selenium Java") {
     ) {
       git branch: 'main', changelog: false, poll: false, url: 'https://git.lab.proficom.de/dhorn/testautomation-tooling.git'
       dir('selenium/java') {
-      	mvn test-compile
-        mvn clean test
+      	sh 'mvn test-compile'
+        sh 'mvn clean test'
       }
     } 
 }
