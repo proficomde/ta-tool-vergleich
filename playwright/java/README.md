@@ -6,7 +6,7 @@
 - Einfache Erstellung von Screenshots während Testfallausführung
   - Screenshots des gesamten DOM möglich, um alle Inhalte zu erfassen, auch Inhalte, die außerhalb des derzeitig sichtbaren Fensters liegen
   - Screenshot von einzelnem Element möglich, wobei der Bildausschnitt nur das Element beinhaltet und somit variabel groß ist 
-  - Ansonsten: zum Element scrollen, damit es in Viewpoint liegt und dann Screenshot von aktuellen Browserfenster machen
+  - Ansonsten: zum Element scrollen, damit es im Viewport liegt und dann Screenshot von aktuellen Browserfenster machen
 - Videoaufzeichnungen von Testausführung nativ unterstützt und auch headless möglich
 - Im Gegensatz zu Selenium ist die Standardausführung in Playwright im [headless mode](https://playwright.dev/java/docs/debug#headed-mode)
 - Bei erstmaliger Testausführung werden automatisch die 3 Webdriver heruntergeladen (Chromium, Firefox, WebKit), auch wenn Chromium Driver für Testausführung spezifiziert wurde
