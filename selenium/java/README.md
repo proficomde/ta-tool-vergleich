@@ -9,5 +9,5 @@
   - Alternativ über Jenkins + Xvfb Plugin (nicht implementiert)
   - Alternativ mittels [video-recorder-java von SergeyPirgov](https://github.com/SergeyPirogov/video-recorder-java), der bei gescheiterter Testausführung Aufnahme anfertigt (nicht implementiert)
 - Ansonsten sehr ähnlicher Aufbau und ähnliches Vorgehen bei Testfallerstellung zu Playwright; Testfallanpassung von Playwright zu Selenium intuitiv
-- Screenshots von bestimmten Elementen müssen erst in den Viewpoint gebracht werden, bspw. durch Scrolling
-  - Wenn `.getScreenshotAs()` auf ein `WebElement` angewendet wird, das außerhalb des aktuellen Viewpoints liegt, ist dieses Element nicht im Screenshot sichtbar; man muss das Element erst in den Viewpoint bringen
+- Screenshots von bestimmten Elementen müssen erst in den Viewport gebracht werden, bspw. durch Scrolling
+  - Wenn `.getScreenshotAs()` auf ein `WebElement` angewendet wird, das außerhalb des aktuellen Viewports liegt, ist dieses Element nicht im Screenshot sichtbar; man muss das Element erst in den Viewport bringen
