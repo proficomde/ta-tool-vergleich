@@ -2,9 +2,6 @@ pipeline {
   agent {
     label 'Docker'
   }
-  tools {
-    dockerTool 'docker-normal'
-  }
   stages {
     stage('Selenium Java') {
       steps {
