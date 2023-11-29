@@ -5,7 +5,7 @@ pipeline {
 
   stages {
     stage('Selenium Java') {
-      setps {
+      steps {
         script {
           docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock:ro --rm") {
             dir("selenium/java") {
