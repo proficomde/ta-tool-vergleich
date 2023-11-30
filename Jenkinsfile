@@ -3,7 +3,7 @@ pipeline {
     label 'Docker'
   }
   tools {
-    dockerTool 'podman'
+    dockerTool 'alias'
   }
 
   stages {
@@ -12,7 +12,7 @@ pipeline {
         script {
           sh 'echo "alias docker=podman" >> .bashrc'
           
-          docker.withTool("podman") {
+          docker.withTool("alias") {
             docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock --rm") {
             dir("selenium/java") {
               sh "mvn test-compile"
