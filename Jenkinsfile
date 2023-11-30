@@ -2,11 +2,16 @@ pipeline {
   agent {
     label 'Docker'
   }
+  tools {
+    dockerTool 'podman'
+  }
+
   stages {
     stage('Selenium Java') {
       steps {
         script {
           sh 'echo "alias docker=podman" >> .bashrc'
+          
           docker.withTool("podman") {
             docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock --rm") {
             dir("selenium/java") {
