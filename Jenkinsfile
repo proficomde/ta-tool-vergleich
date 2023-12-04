@@ -12,6 +12,7 @@ pipeline {
           dir("selenium/java") {
             sh "id"
             sh "mvn test-compile"
+            for 
             sh "mvn clean test"
             }
           }
