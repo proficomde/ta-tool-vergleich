@@ -20,7 +20,7 @@ public class BuyProductsTest {
     static final String URL = "https://www.advantageonlineshopping.com/#/";
     static final boolean HEADLESS_MODE = true;
     static final boolean TAKE_SCREENSHOTS = false;
-    static final boolean TAKE_RECORDING = false;
+    static final boolean TAKE_RECORDING = true;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
@@ -210,7 +210,7 @@ public class BuyProductsTest {
             // Fallback cleanup of input in case the hacky method is redundant
             cardNumberInput.press("Backspace");
         }
-        cardNumberInput.pressSequentially("123456789123");
+        
 
         Locator cvvNumberInput = page.locator("//input[@name='cvv_number']");
         cvvNumberInput.click();
@@ -220,15 +220,25 @@ public class BuyProductsTest {
             cvvNumberInput.pressSequentially("1");
             cardNumberInput.press("Backspace");
         }
+
+
+        page.locator("//div[@id='paymentMethod']").click();
+        page.locator("//div[@id='paymentMethod']//input[@name='card_number']/../label[contains(@class, 'invalid')]").waitFor();
+        page.locator("//div[@id='paymentMethod']").click();
+        page.locator("//div[@id='paymentMethod']//input[@name='cvv_number']/../label[contains(@class, 'invalid')]").waitFor();
+
+        cardNumberInput.pressSequentially("123456789123");
         cvvNumberInput.pressSequentially("123");
+        cvvNumberInput.press("Control+A");
+        cvvNumberInput.pressSequentially("123");
+
+
 
         page.locator("//select[@name='mmListbox']").selectOption("04");
         page.locator("//select[@name='yyyyListbox']").selectOption("2031");
         page.locator("//input[@name='cardholder_name']").fill("proficom");
 
         //fill out card number and cvv again
-        cardNumberInput.fill("123456789123");
-        cvvNumberInput.fill("123");
 
         // STEP 6.6 - Click 'NEXT'
         page.locator("//button[@id='pay_now_btn_ManualPayment']").click();
