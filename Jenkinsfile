@@ -15,7 +15,7 @@ pipeline {
                 dir("selenium/java") {
                   sh "mvn test-compile"
                   for (int i = 0; i < numberOfRuns; i++) {
-                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "mvn clean test"
                     }
                   }
@@ -33,7 +33,7 @@ pipeline {
                 dir("selenium/java_PageObjectPattern") {
                   sh "mvn test-compile"
                   for (int i = 0; i < numberOfRuns; i++) {
-                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "mvn clean test"
                     } 
                   }
@@ -51,7 +51,7 @@ pipeline {
                 dir("selenium/js") {
                   sh "npm ci"
                   for (int i = 0; i < numberOfRuns; i++) {
-                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "npm test"
                     } 
                   } 
@@ -76,7 +76,7 @@ pipeline {
                   sh "mvn test-compile"
 
                   for (int i = 0; i < numberOfRuns; i++) {
-                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                     } 
                   }
                   sh "cp timings.csv playwright-java.csv" 
