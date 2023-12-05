@@ -28,7 +28,7 @@ pipeline {
             }
           }
         }
-        stage('Selenium Java') {
+        stage('Selenium Java - Page Objects') {
           steps {
             script {     
               docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
