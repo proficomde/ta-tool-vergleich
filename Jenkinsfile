@@ -15,10 +15,8 @@ pipeline {
                 dir("selenium/java") {
                   sh "mvn test-compile"
                   for (int i = 0; i < numberOfRuns; i++) {
-                    try {
+                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "mvn clean test"
-                    } catch (err) {
-                      // nothing to do here
                     }
                   }
                   sh "cp timings.csv selenium-java.csv"
@@ -35,11 +33,9 @@ pipeline {
                 dir("selenium/java_PageObjectPattern") {
                   sh "mvn test-compile"
                   for (int i = 0; i < numberOfRuns; i++) {
-                    try {
+                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "mvn clean test"
-                    } catch (err) {
-                      // nothing to do here
-                    }
+                    } 
                   }
                   sh "cp timings.csv selenium-java-pop.csv"
                   archiveArtifacts allowEmptyArchive: true, artifacts: 'selenium-java-pop.csv', followSymlinks: false
@@ -55,11 +51,9 @@ pipeline {
                 dir("selenium/js") {
                   sh "npm ci"
                   for (int i = 0; i < numberOfRuns; i++) {
-                    try {
+                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "npm test"
-                    } catch (err) {
-                      // nothing to do here
-                    }
+                    } 
                   } 
                   sh "cp timings.csv selenium-js.csv" 
                   archiveArtifacts allowEmptyArchive: true, artifacts: 'selenium-js.csv', followSymlinks: false            
@@ -82,11 +76,8 @@ pipeline {
                   sh "mvn test-compile"
 
                   for (int i = 0; i < numberOfRuns; i++) {
-                    try {
-                      sh "mvn clean test"
-                    } catch (err) {
-                      // nothing to do here
-                    }
+                    catchError((buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    } 
                   }
                   sh "cp timings.csv playwright-java.csv" 
                   archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-java.csv', followSymlinks: false            

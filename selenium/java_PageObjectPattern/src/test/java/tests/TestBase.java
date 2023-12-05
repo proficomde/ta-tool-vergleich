@@ -13,10 +13,15 @@ import org.testcontainers.containers.VncRecordingContainer.VncRecordingFormat;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 
 public class TestBase {
     public WebDriver driver;
+    static long beforeBrowserStartTS =0;
+    static long beforeTestStartTS = 0;
     
 
     public static final String URL = "https://advantageonlineshopping.com/#/";
@@ -36,15 +41,29 @@ public class TestBase {
     }
 
     public void init() {        
-        
+        beforeBrowserStartTS = System.currentTimeMillis();
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
         driver.get(URL);
+        beforeTestStartTS = System.currentTimeMillis();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
     @After
     public void tearDown(){
+        long testStoppedTS = System.currentTimeMillis();
+        String testRunTimeWithBrowser = Long.toString(testStoppedTS - beforeBrowserStartTS);
+        String testRunTime = Long.toString(testStoppedTS - beforeTestStartTS);
+
+        
+        try {
+            Files.writeString(new File("timings.csv").toPath(), testRunTimeWithBrowser + "\t" + testRunTime + "\n", StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
         driver.quit();
     }
 }
