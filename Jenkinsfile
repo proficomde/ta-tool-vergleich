@@ -77,6 +77,7 @@ pipeline {
 
                   for (int i = 0; i < numberOfRuns; i++) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                      sh "mvn clean test"
                     } 
                   }
                   sh "cp timings.csv playwright-java.csv" 
