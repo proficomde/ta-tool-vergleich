@@ -28,6 +28,26 @@ pipeline {
             }
           }
         }
+        stage('Selenium Java') {
+          steps {
+            script {     
+              docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+                dir("selenium/java_PageObjectPattern") {
+                  sh "mvn test-compile"
+                  for (int i = 0; i < numberOfRuns; i++) {
+                    try {
+                      sh "mvn clean test"
+                    } catch (err) {
+                      // nothing to do here
+                    }
+                  }
+                  sh "cp timings.csv selenium-java-pop.csv"
+                  archiveArtifacts allowEmptyArchive: true, artifacts: 'selenium-java-pop.csv', followSymlinks: false
+                }
+              }
+            }
+          }
+        }
         stage('Selenium JavaScript') {
           steps {
             script {
@@ -76,6 +96,11 @@ pipeline {
           }
         }
       }
+    }
+  }
+  post {
+    always {
+      cleanWs()
     }
   }
 }
