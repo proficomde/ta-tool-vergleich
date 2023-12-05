@@ -1,12 +1,15 @@
 package de.proficom.guitests;
 
 import com.microsoft.playwright.*;
+
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,18 +24,56 @@ public class BuyProductsTest {
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
+    static long beforeBrowserStartTS =0;
+    static long beforeTestStartTS = 0;
+    LocalDateTime timeNowTestStart = LocalDateTime.now();
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+    
+    Playwright playwright;
+    Browser browser;
+    BrowserContext browserContext;
+    Page page;
+
+
+    @AfterMethod 
+    public void cleanUp() {
+        long testStoppedTS = System.currentTimeMillis();
+        String testRunTimeWithBrowser = Long.toString(testStoppedTS - beforeBrowserStartTS);
+        String testRunTime = Long.toString(testStoppedTS - beforeTestStartTS);
+
+        
+        try {
+            Files.writeString(new File("timings.csv").toPath(), testRunTimeWithBrowser + "\t" + testRunTime + "\n", StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        page.close();
+        if (TAKE_RECORDING) {
+            browserContext.close();
+            String originalRecordingPath = page.video().path().toString();
+            File newRecordingFile = new File("recordings/", "screen_recording_"+timeNowTestStart.format(dateTimeFormatter)+".webm");
+            try {
+                Files.move(Paths.get(originalRecordingPath), newRecordingFile.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        browser.close();
+        playwright.close();
+
+    }
+
     @Test
     public void RunTestCase() {
-        LocalDateTime timeNowTestStart = LocalDateTime.now();
+        
+        beforeBrowserStartTS = System.currentTimeMillis();
 
-        Playwright playwright = Playwright.create();
-        Browser browser = playwright.chromium().launch(
+        playwright = Playwright.create();
+        browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(HEADLESS_MODE)
-        );
-
-        BrowserContext browserContext;
-        Page page;
-
+        ); 
         if (TAKE_RECORDING) {
             browserContext = browser.newContext(new Browser.NewContextOptions()
                     .setRecordVideoDir(Paths.get("recordings/"))
@@ -43,10 +84,11 @@ public class BuyProductsTest {
             page = browser.newPage();
         }
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+        
 
         // STEP 0   - Go to home page
         page.navigate(URL);
+        beforeTestStartTS = System.currentTimeMillis();
 
         // STEP 1   - Check if shopping cart is empty
         page.locator("//a[@id='shoppingCartLink']").click();
@@ -183,28 +225,20 @@ public class BuyProductsTest {
         page.locator("//select[@name='mmListbox']").selectOption("04");
         page.locator("//select[@name='yyyyListbox']").selectOption("2031");
         page.locator("//input[@name='cardholder_name']").fill("proficom");
+
+        //fill out card number and cvv again
+        cardNumberInput.fill("123456789123");
+        cvvNumberInput.fill("123");
+
         // STEP 6.6 - Click 'NEXT'
         page.locator("//button[@id='pay_now_btn_ManualPayment']").click();
 
         // STEP 7   - Save and display order number and tracking number
+
+        page.locator("//div[@class!='ng-hide' and ./div/@id='orderPaymentSuccess']").waitFor();
         Locator trackingNumberLabel = page.locator("//label[@id='trackingNumberLabel' and string-length(text())>0]");
         Locator orderNumberLabel = page.locator("//label[@id='orderNumberLabel' and string-length(text())>0]");
         System.out.println("Tracking number: "+trackingNumberLabel.textContent());
         System.out.println("Order number: "+orderNumberLabel.textContent());
-
-        page.close();
-        if (TAKE_RECORDING) {
-            browserContext.close();
-            String originalRecordingPath = page.video().path().toString();
-            File newRecordingFile = new File("recordings/", "screen_recording_"+timeNowTestStart.format(dateTimeFormatter)+".webm");
-            try {
-                Files.move(Paths.get(originalRecordingPath), newRecordingFile.toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        browser.close();
-        playwright.close();
-
     }
 }

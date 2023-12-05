@@ -1,4 +1,4 @@
-numberOfRuns = 10
+numberOfRuns = 1
 
 pipeline {
   agent {
@@ -19,7 +19,8 @@ pipeline {
                   // nothing to do here
                 }
               }
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'timings.*', followSymlinks: false
+              sh "cp timings.csv selenium-java.csv"
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'selenium-java.csv', followSymlinks: false
             }
           }
         }
@@ -37,8 +38,31 @@ pipeline {
                 } catch (err) {
                   // nothing to do here
                 }
-              }  
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'timings.*', followSymlinks: false            
+              } 
+              sh "cp timings.csv selenium-js.csv" 
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'selenium-js.csv', followSymlinks: false            
+            }
+          }
+        }
+      }
+    }
+    stage('Playwright Java') {
+      steps {
+        script {
+          docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+            dir("playwright/java") {
+              sh 'mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"'
+              sh "mvn test-compile"
+
+              for (int i = 0; i < numberOfRuns; i++) {
+                try {
+                  sh "mvn clean test"
+                } catch (err) {
+                  // nothing to do here
+                }
+              }
+              sh "cp timings.csv playwright-java.csv" 
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'selenium-java.csv', followSymlinks: false            
             }
           }
         }
