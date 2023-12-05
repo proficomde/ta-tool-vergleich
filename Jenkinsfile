@@ -15,7 +15,7 @@ pipeline {
               for (int i = 0; i < numberOfRuns; i++) {
                 try {
                   sh "mvn clean test"
-                } catch() {
+                } catch {
                   // nothing to do here
                 }
               }
@@ -34,7 +34,7 @@ pipeline {
               for (int i = 0; i < numberOfRuns; i++) {
                 try {
                   sh "npm test"
-                } catch() {
+                } catch {
                   // nothing to do here
                 }
               }  
