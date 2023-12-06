@@ -92,8 +92,10 @@ pipeline {
             script {
               docker.image("node:21.3.0-bookworm").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
                 dir("playwright/js") {
-                  sh "npm ci"
+                  sh "npm ci"                  
                   sh "npx playwright install"
+                  sh "npx playwright install-deps"
+                  
                   for (int i = 0; i < numberOfRuns; i++) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                       sh "npm run test"
