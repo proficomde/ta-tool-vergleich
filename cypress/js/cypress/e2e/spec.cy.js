@@ -67,7 +67,7 @@ describe('Advantage Online Shopping', () => {
     cy.xpath('//*[@id="checkOutButton"]').click() // Checkout
 
     // Create new user
-    cy.xpath('//*[@id="registration_btn"]').click()
+    cy.xpath('//*[contains(@id, "registration_btn")]').click()
     var name = generateUsername(username)
     cy.xpath('//*[@id="formCover"]/div[1]/div[1]/sec-view[1]/div/input').type(name)
     if (screenshot) {cy.xpath('//*[@id="formCover"]/div[4]/span').screenshot()}
@@ -80,7 +80,7 @@ describe('Advantage Online Shopping', () => {
     cy.xpath('//*[@id="formCover"]/div[3]/div[1]/sec-view[2]/div/input').type(city)
     cy.xpath('//*[@id="formCover"]/div[4]/input').click() // no advertisement
     cy.xpath('//*[@id="formCover"]/sec-view/div/input').click() // agree conditions
-    cy.xpath('//*[@id="register_btn"]').click() // Register
+    cy.xpath('//*[contains(@id, "register_btn")]').click() // Register
 
     // Check shipping details
     cy.xpath('//*[@id="userDetails"]/div[1]/label').contains(firstName + " " + lastName)

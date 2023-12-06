@@ -7,8 +7,8 @@ const { By, Builder, Select, until, Key} = require("selenium-webdriver");
 
 //set test case specific variables
 //const baseURI = "https://advantageonlineshopping.com"
-const baseUR= "http://172.16.15.213:8080/"
-const TAKE_SCREENSHOT = true
+const baseURI= "http://172.16.15.213:8080/"
+const TAKE_SCREENSHOT = false
 
 describe('AOS-TestScript', function() {
   let driver;
@@ -150,7 +150,7 @@ describe('AOS-TestScript', function() {
     country = "Germany"
 
     await driver.findElement(By.xpath("//button[@id='checkOutButton']")).click();
-    await driver.findElement(By.xpath("//button[@id='registration_btn']")).click();
+    await driver.findElement(By.xpath("//button[contains(@id, 'registration_btn')]")).click();
 
     let registrationForm = driver.findElement(By.xpath("//div[@id='form']"))
       await registrationForm.findElement(By.xpath(".//input[@name='usernameRegisterPage']")).sendKeys(`pc${formatDate(new Date(), "YYMMDDhhmmss")}`)
@@ -173,7 +173,7 @@ describe('AOS-TestScript', function() {
     
       TAKE_SCREENSHOT ? await registrationForm.takeScreenshot().then((image) => saveScreenShot(image, "04.5_registrationForm_big.png")): null 
 
-    let registrationButton = await driver.findElement(By.xpath(".//button[@id='register_btn']"))
+    let registrationButton = await driver.findElement(By.xpath(".//button[contains(@id, 'register_btn')]"))
     driver.wait(until.elementIsEnabled(registrationButton), 2000)
     await registrationButton.click()
 

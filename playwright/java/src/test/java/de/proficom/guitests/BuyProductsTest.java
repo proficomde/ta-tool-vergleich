@@ -161,7 +161,7 @@ public class BuyProductsTest {
         // STEP 6.1 - Go to checkout
         page.locator("//button[@id='checkOutButton']").click();
         // STEP 6.2 - Create new user
-        page.locator("//button[@id='registration_btn']").click();
+        page.locator("//button[contains(@id, 'registration_btn')]").click();
         // Create username in format: pc<date><hour> //pc<YYMMDD><hhmmss>
         LocalDateTime timeNowUserRegistration = LocalDateTime.now();
         page.locator("//input[@name='usernameRegisterPage']").fill("pc"+timeNowUserRegistration.format(dateTimeFormatter));
@@ -180,7 +180,7 @@ public class BuyProductsTest {
                     .setPath(Paths.get("screenshots/registration_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
         }
 
-        page.locator("//button[@id='register_btn']").click();
+        page.locator("//button[contains(@id, 'register_btn')]").click();
         // STEP 6.3 - Check if shipping details are correct
         Locator userNameLabel = page.locator("//div[@id='userDetails']//label[text()='profi Worker']");
 

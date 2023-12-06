@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 public class LoginPage extends PageBase{
-    @FindBy(xpath = "//*[@id='registration_btn']")
+    @FindBy(xpath = "//*[contains(@id, 'registration_btn')]")
     WebElement registrationButton;
 
     @FindBy(xpath = "//input[@name='usernameRegisterPage']")
@@ -35,7 +35,7 @@ public class LoginPage extends PageBase{
     @FindBy(xpath = "//input[@name='i_agree']")
     WebElement checkboxUsePrivacy;
 
-    @FindBy(xpath = "//button[@id='register_btn']")
+    @FindBy(xpath = "//button[contains(@id, 'register_btn')]")
     WebElement registerButton;
 
     public LoginPage(WebDriver driver) {

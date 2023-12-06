@@ -33,7 +33,7 @@ public class SeleniumBuyProductsTest {
     //static final String URL = "https://www.advantageonlineshopping.com/#/";
     static final String URL = "http://172.16.15.213:8080/";
     static final boolean HEADLESS_MODE = true;
-    static final boolean TAKE_SCREENSHOTS = true;
+    static final boolean TAKE_SCREENSHOTS = false;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
@@ -169,7 +169,7 @@ public class SeleniumBuyProductsTest {
 
         
 
-        driver.findElement(By.xpath(".//button[@id='registration_btn']")).click();
+        driver.findElement(By.xpath(".//button[contains(@id, 'registration_btn')]")).click();
         // Create username in format: pc<date><hour> //pc<YYMMDD><hhmmss>
 
         WebElement registrationForm = driver.findElement(By.xpath("//div[@id='form']"));
@@ -191,7 +191,7 @@ public class SeleniumBuyProductsTest {
             takeScreenshot(registrationForm, "screenshots/4.5_registrationForm_big.png");
         }
 
-        driver.findElement(By.xpath("//button[@id='register_btn']")).click();
+        driver.findElement(By.xpath("//button[contains(@id, 'register_btn')]")).click();
         // STEP 6.3 - Check if shipping details are correct
         // Important! Need to wait for element to be visible as underlying JavaScript will refresh page content!
         WebElement userNameLabel = explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='userDetails']//label[text()='profi Worker']")));
