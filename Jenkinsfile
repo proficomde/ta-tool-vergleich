@@ -1,4 +1,4 @@
-numberOfRuns = 5
+numberOfRuns = 1
 
 pipeline {
   agent {
@@ -67,6 +67,26 @@ pipeline {
 
     stage ("Playwright") {
       stages {
+        stage('Playwright Java') {
+          steps {
+            script {
+              docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+                dir("playwright/java") {
+                  sh 'mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"'
+                  sh "mvn test-compile"
+
+                  for (int i = 0; i < numberOfRuns; i++) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                      sh "mvn clean test"
+                    } 
+                  }
+                  sh "cp timings.csv playwright-java.csv" 
+                  archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-java.csv', followSymlinks: false            
+                }
+              }
+            }
+          }
+        }
         stage('Playwright JavaScript') {
           steps {
             script {
