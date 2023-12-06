@@ -1,4 +1,4 @@
-numberOfRuns = 1
+numberOfRuns = 20
 
 pipeline {
   agent {
