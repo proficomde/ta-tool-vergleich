@@ -49,7 +49,6 @@ test('orders a mouse and a speaker as new user', async ({ page }, testInfo) => {
 
         // Filter for Scroller Type "Scroll Ball" & "Scroll Ring"
         await page.locator("//*[@id='accordionAttrib0']").click();
-        //await page.locator("//*[@id='accordionAttrib0']/following-sibling::DIV[@class='option' and @style='display: block;']").waitFor();
         await page.locator("//INPUT[@id='scroller_type_0']").click();
         await page.locator("//INPUT[@id='scroller_type_1']").click();
 
