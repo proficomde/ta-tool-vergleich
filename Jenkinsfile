@@ -1,4 +1,4 @@
-numberOfRuns = 20
+numberOfRuns = 5
 
 pipeline {
   agent {
@@ -67,21 +67,42 @@ pipeline {
 
     stage ("Playwright") {
       stages {
-        stage('Playwright Java') {
+        stage('Playwright JavaScript') {
           steps {
             script {
-              docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
-                dir("playwright/java") {
-                  sh 'mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"'
-                  sh "mvn test-compile"
-
+              docker.image("node:21.3.0-bookworm").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+                dir("playwright/js") {
+                  sh "npm ci"
+                  sh "npx playwright install"
                   for (int i = 0; i < numberOfRuns; i++) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                      sh "mvn clean test"
+                      sh "npm run test"
                     } 
-                  }
-                  sh "cp timings.csv playwright-java.csv" 
-                  archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-java.csv', followSymlinks: false            
+                  } 
+                  sh "cp timings.csv playwright-js.csv" 
+                  archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-js.csv', followSymlinks: false            
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    stage ("Cypress") {
+      stages {
+        stage('Cypress JavaScript') {
+          steps {
+            script {
+              docker.image("cypress/base:20.9.0").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+                dir("cypress/js") {
+                  sh "npm ci"
+                  for (int i = 0; i < numberOfRuns; i++) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                      sh "npm run test"
+                    } 
+                  } 
+                  sh "cp timings.csv cypress-js.csv" 
+                  archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress-js.csv', followSymlinks: false            
                 }
               }
             }

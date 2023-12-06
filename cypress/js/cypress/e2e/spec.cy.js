@@ -1,3 +1,4 @@
+
 describe('Advantage Online Shopping', () => {
 
   const username = "pc"
@@ -17,26 +18,34 @@ describe('Advantage Online Shopping', () => {
   // const screenshot = true
 
 
+  let beforeBrowserStartTS
+  let beforeTestStartTS
+
   it('AOS', () => {
+    beforeBrowserStartTS = Date.now()
+    console.log("Hello World")
     // Visit website
     cy.visit("/")
+    beforeTestStartTS = Date.now()
 
     // Check that cart is empty
     cy.xpath('//*[@id="menuCart"]').click()
     cy.xpath('//*[@id="shoppingCart"]/div/label').contains("Your shopping cart is empty")
     if (screenshot) {cy.screenshot({ capture: 'viewport'})}
     cy.xpath('//*[@id="shoppingCart"]/div/a').click()
-
     // Category "Mice"
     cy.xpath('//*[@id="miceImg"]').click() // select category
-    cy.xpath('//*[@id="accordionAttrib0"]').click() // open filter: scroller type
-    cy.xpath('//*[@id="scroller_type_0"]').click() // select scroll bar
-    cy.xpath('//*[@id="scroller_type_1"]').click() // select scroll ring
+    cy.xpath("//div[@id='mobileSlide']//ul/li[2]").click() // open filter: scroller type
+    cy.xpath("//div[@id='mobileSlide']//ul/li[2]//label[./text()='Scroll Ball']/../input").click({force: true}) // select scroll bar
+    cy.xpath("//div[@id='mobileSlide']//ul/li[2]//label[./text()='Scroll Ring']/../input").click({force: true}) // select scroll ring
+
+    cy.xpath('//div[@class="cell categoryRight"]/ul/li').should('have.length', 2)
+
     if (screenshot) {cy.screenshot({ capture: 'viewport'})}
     cy.xpath('//*[@id="26"]').click() // select mice
     cy.xpath('//*[@id="rabbit"]').click({ multiple: true }) // select color red
     cy.xpath('//*[@id="productProperties"]/div[4]/button').click() // add to cart
-
+    
     // Back to home-screen
     cy.xpath('/html/body/div[3]/nav/a[1]').click()
 
@@ -89,10 +98,34 @@ describe('Advantage Online Shopping', () => {
     cy.xpath('//*[@id="pay_now_btn_ManualPayment"]').click() // click Pay Now
 
     // Tracking number and Order number
-    cy.xpath('//*[@id="trackingNumberLabel"]').should('be.visible').invoke('text').then(cy.log)
-    cy.xpath('//*[@id="orderNumberLabel"]').should('be.visible').invoke('text').then(cy.log)
+    //cy.xpath("//div[@class!='ng-hide' and ./div/@id='orderPaymentSuccess']").should('be.visible')
+    let trackingNumber=""
+    let orderNumber=""
+    cy.xpath('//*[@id="trackingNumberLabel"]').should('be.visible').invoke('text').then(($value) => {
+      trackingNumber = $value
+    }).then(cy.log)
+    cy.xpath('//*[@id="orderNumberLabel"]').should('be.visible').invoke('text').then(($value) => {
+      orderNumber = $value
+    }).then(cy.log)
+
+    
+    console.log(`Tracking Number: ${trackingNumber}`)
+    console.log(`Order Number: ${orderNumber}`)
 
   })
+
+  
+  after('Clean up', async function() {
+  
+    let testStoppedTS = Date.now()
+    let testRunTimeWithBrowser = testStoppedTS - beforeBrowserStartTS
+    let testRunTime = testStoppedTS - beforeTestStartTS
+
+    //write times to text-file for later processing
+    console.log(`${testRunTimeWithBrowser}\t${testRunTime}`)
+    cy.writeFile('timings.csv', `${testRunTimeWithBrowser}\t${testRunTime}\n`, { flag: 'a+' })
+  });
+
 
 })
 

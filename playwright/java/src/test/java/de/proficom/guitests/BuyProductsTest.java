@@ -108,10 +108,10 @@ public class BuyProductsTest {
         page.locator("//li[contains(@*, 'attributesToShow')][.//*[contains(text(), 'SCROLLER TYPE')]]").click();
         page.locator("//label[text()='Scroll Ball']/../input").check();
         page.locator("//label[text()='Scroll Ring']/../input").check();
-
+        page.waitForCondition(() -> page.locator("//*[contains(@class, 'productName')]").count() == 2);
         if (TAKE_SCREENSHOTS) {
             // We need to wait for JavaScript to apply the filter correctly
-            page.waitForCondition(() -> page.locator("//*[contains(@class, 'productName')]").count() == 2);
+            
             page.screenshot(new Page.ScreenshotOptions()
                     .setPath(Paths.get("screenshots/filter_applied_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
         }

@@ -107,15 +107,14 @@ public class SeleniumBuyProductsTest {
         driver.findElement(By.xpath("//li[contains(@*, 'attributesToShow')][.//*[contains(text(), 'SCROLLER TYPE')]]")).click();
         driver.findElement(By.xpath("//label[text()='Scroll Ball']/../input")).click();
         driver.findElement(By.xpath("//label[text()='Scroll Ring']/../input")).click();
-
-        if (TAKE_SCREENSHOTS) {
-            // We need to wait for JavaScript to apply the filter correctly
-            explicitWait.until(new ExpectedCondition<Boolean>() {
+        explicitWait.until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver driver) {
                     int elementCount = driver.findElements(By.xpath("//*[contains(@class, 'productName')]")).size();
                     if (elementCount == 2) return true; else return false;
                 }
-            });
+        });
+        if (TAKE_SCREENSHOTS) {
+            // We need to wait for JavaScript to apply the filter correctly
             takeScreenshot(driver, "screenshots/2_filter_applied.png");
         }
 
