@@ -5,6 +5,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'https://www.advantageonlineshopping.com'
+    //baseUrl: 'https://www.advantageonlineshopping.com'
+    baseUrl: 'http://172.16.15.213:8080/'
   },
 });

@@ -17,7 +17,8 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class BuyProductsTest {
 
-    static final String URL = "https://www.advantageonlineshopping.com/#/";
+    //static final String URL = "https://www.advantageonlineshopping.com/#/";
+    static final String URL = "http://172.16.15.213:8080/";
     static final boolean HEADLESS_MODE = true;
     static final boolean TAKE_SCREENSHOTS = false;
     static final boolean TAKE_RECORDING = true;

@@ -6,7 +6,8 @@ const { By, Builder, Select, until, Key} = require("selenium-webdriver");
 
 
 //set test case specific variables
-const baseURI = "https://advantageonlineshopping.com"
+//const baseURI = "https://advantageonlineshopping.com"
+const baseUR= "http://172.16.15.213:8080/"
 const TAKE_SCREENSHOT = true
 
 describe('AOS-TestScript', function() {

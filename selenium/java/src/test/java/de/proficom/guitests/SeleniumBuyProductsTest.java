@@ -30,7 +30,8 @@ import java.time.format.DateTimeFormatter;
 public class SeleniumBuyProductsTest {
 
 
-    static final String URL = "https://www.advantageonlineshopping.com/#/";
+    //static final String URL = "https://www.advantageonlineshopping.com/#/";
+    static final String URL = "http://172.16.15.213:8080/";
     static final boolean HEADLESS_MODE = true;
     static final boolean TAKE_SCREENSHOTS = true;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";

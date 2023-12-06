@@ -24,8 +24,8 @@ public class TestBase {
     static long beforeTestStartTS = 0;
     
 
-    public static final String URL = "https://advantageonlineshopping.com/#/";
-    //public static final String URL = "http://172.16.15.213:8080/";
+    //public static final String URL = "https://advantageonlineshopping.com/#/";
+    public static final String URL = "http://172.16.15.213:8080/";
     static File file = new File("recordings");
 
 
