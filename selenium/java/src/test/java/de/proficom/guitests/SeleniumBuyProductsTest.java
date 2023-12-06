@@ -50,7 +50,7 @@ public class SeleniumBuyProductsTest {
     @ClassRule
     public static BrowserWebDriverContainer chrome =
         new BrowserWebDriverContainer<>(DockerImageName.parse("selenium/standalone-chrome:119.0"))
-                    .withCapabilities(new ChromeOptions())
+                    .withCapabilities(new ChromeOptions().addArguments("--headless=new"))
                     .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
                     .withRecordingFileFactory(new DefaultRecordingFileFactory());
 
