@@ -1,6 +1,7 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -80,7 +81,7 @@ public class OrderPaymentPage extends PageBase{
 
     public void fillCardNumberCVVOneMoreTime(String cardNumber, String cvvNumber) {
         type(creditCardField, cardNumber);
-        type(cvvNumberField, cvvNumber);
+        type(cvvNumberField, cvvNumber+Keys.chord(Keys.CONTROL,"a")+cvvNumber);
     }
 
     public void waitforOrderToBeFinished() {
