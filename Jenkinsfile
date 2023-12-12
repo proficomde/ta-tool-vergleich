@@ -1,7 +1,7 @@
 numberOfRuns = 1
 
 def buildNumber = env.BUILD_NUMBER as int
-if (buildNUmber >1) milestone (buildNumber -1)
+if (buildNumber >1) milestone (buildNumber -1)
 milestone(buildNumber)
 
 
