@@ -1,4 +1,9 @@
-numberOfRuns = 20
+numberOfRuns = 1
+
+def buildNumber = env.BUILD_NUMBER as int
+if (buildNUmber >1) milestone (buildNumber -1)
+milestone(buildNumber)
+
 
 pipeline {
   agent {

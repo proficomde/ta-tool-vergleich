@@ -59,7 +59,7 @@ public class SeleniumBuyProductsTest {
     public static void beforeClass() {
         System.out.println(file.getAbsolutePath());
         beforeBrowserStartTS = System.currentTimeMillis();
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().addArguments("--headless=new"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }

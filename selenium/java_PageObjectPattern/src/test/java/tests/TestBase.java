@@ -43,7 +43,7 @@ public class TestBase {
 
     public void init() {        
         beforeBrowserStartTS = System.currentTimeMillis();
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().addArguments("--headless=new"));
         driver.get(URL);
         beforeTestStartTS = System.currentTimeMillis();
         driver.manage().window().maximize();
