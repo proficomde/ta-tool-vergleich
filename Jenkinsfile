@@ -1,4 +1,4 @@
-numberOfRuns = 1
+numberOfRuns = 100
 
 def buildNumber = env.BUILD_NUMBER as int
 if (buildNumber >1) milestone (buildNumber -1)

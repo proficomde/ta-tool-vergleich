@@ -32,9 +32,8 @@ public class TestBase {
     @ClassRule
     public static BrowserWebDriverContainer chrome = new BrowserWebDriverContainer<>(DockerImageName.parse("selenium/standalone-chrome:119.0"))
                     .withCapabilities(new ChromeOptions())
-//                    .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
-//                    .withRecordingFileFactory(new DefaultRecordingFileFactory())
-                    ;
+                    .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
+                    .withRecordingFileFactory(new DefaultRecordingFileFactory());
 
     @Before
     public  void setupTest() {
@@ -43,7 +42,7 @@ public class TestBase {
 
     public void init() {        
         beforeBrowserStartTS = System.currentTimeMillis();
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().addArguments("--headless=new"));
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
         driver.get(URL);
         beforeTestStartTS = System.currentTimeMillis();
         driver.manage().window().maximize();

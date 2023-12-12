@@ -50,16 +50,15 @@ public class SeleniumBuyProductsTest {
     @ClassRule
     public static BrowserWebDriverContainer chrome =
         new BrowserWebDriverContainer<>(DockerImageName.parse("selenium/standalone-chrome:119.0"))
-                    .withCapabilities(new ChromeOptions().addArguments("--headless=new"))
-//                    .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
-//                    .withRecordingFileFactory(new DefaultRecordingFileFactory())
-                    ;
+                    .withCapabilities(new ChromeOptions())
+                    .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
+                    .withRecordingFileFactory(new DefaultRecordingFileFactory());
+            
 
     @BeforeClass
     public static void beforeClass() {
-        System.out.println(file.getAbsolutePath());
         beforeBrowserStartTS = System.currentTimeMillis();
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().addArguments("--headless=new"));
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
