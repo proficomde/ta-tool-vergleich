@@ -81,7 +81,7 @@ public class OrderPaymentPage extends PageBase{
 
     public void fillCardNumberCVVOneMoreTime(String cardNumber, String cvvNumber) {
         type(creditCardField, cardNumber);
-        type(cvvNumberField, cvvNumber+Keys.chord(Keys.CONTROL,"a")+cvvNumber);
+        type(cvvNumberField, cvvNumber + Keys.chord(Keys.CONTROL,"a") + cvvNumber);
     }
 
     public void waitforOrderToBeFinished() {
