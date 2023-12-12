@@ -36,7 +36,7 @@ describe('AOS-TestScript', function() {
         "--window-size=1920,1080"
         ]
     }})
-      .withRecording()
+//      .withRecording()
       .start();
 
     beforeBrowserStartTS = Date.now()

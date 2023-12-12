@@ -32,8 +32,9 @@ public class TestBase {
     @ClassRule
     public static BrowserWebDriverContainer chrome = new BrowserWebDriverContainer<>(DockerImageName.parse("selenium/standalone-chrome:119.0"))
                     .withCapabilities(new ChromeOptions())
-                    .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
-                    .withRecordingFileFactory(new DefaultRecordingFileFactory());
+//                    .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
+//                    .withRecordingFileFactory(new DefaultRecordingFileFactory())
+                    ;
 
     @Before
     public  void setupTest() {
