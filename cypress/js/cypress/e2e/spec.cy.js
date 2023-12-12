@@ -22,6 +22,8 @@ describe('Advantage Online Shopping', () => {
   let beforeTestStartTS
 
   it('AOS', () => {
+    Cypress.config('defaultCommandTimeout', 10000)
+
     beforeBrowserStartTS = Date.now()
     console.log("Hello World")
     // Visit website
@@ -135,10 +137,10 @@ function generateUsername(){
   var username = "pc"
   var hours = now.getHours()
   var minute = (now.getMinutes() < 10 ? '0' : '') + now.getMinutes()
+  var sec = (now.getSeconds() < 10 ? '0' : '') + now.getSeconds()
   var date = now.getDate()
   var month = ((now.getMonth() + 1) < 10 ? '0' : '') + (now.getMonth() + 1)
-  var year = now.getFullYear()
-  return username.concat(year,month,date,hours,minute)
+  return username.concat(month,date,hours,minute,sec)
 
 }
 
