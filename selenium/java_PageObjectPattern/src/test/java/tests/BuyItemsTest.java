@@ -24,7 +24,7 @@ public class BuyItemsTest extends TestBase{
         homePage = new HomePage(driver);
         homePage.clickOnMenuCartButton();
         shoppingCartPage = new ShoppingCartPage(driver);
-        Assert.assertTrue(shoppingCartPage.getCartIsEmptyText().contains("Your shopping cart is empty"));
+        Assert.assertTrue("empty Shopping cart not found.", shoppingCartPage.getCartIsEmptyText().contains("Your shopping cart is empty") );
         //shoppingCartPage.pause(2000);
         shoppingCartPage.takeScreenshot();
         shoppingCartPage.clickOnContinueShoppingLink();

@@ -92,12 +92,25 @@ describe('Advantage Online Shopping', () => {
     cy.xpath('//*[@id="next_btn"]').click({multiple: true, force: true}) // click Next
 
     // Payment Master Credit
-    cy.xpath('//input[@name="cvv_number"]').type(CVS,{force:true})
+    
     cy.xpath('//input[@name="masterCredit"]').click()
+    cy.xpath('//input[@id="creditCard"]').type(CCnumber,{force:true})
+    cy.xpath('//input[@name="cvv_number"]').type(CVS,{force:true})
     cy.xpath('//select[@name="mmListbox"]').select(CCmonth)
     cy.xpath('//select[@name="yyyyListbox"]').select(CCyear)
     cy.xpath('//input[@name="cardholder_name"]').type(CCholder)
+
+    cy.xpath('//input[@id="creditCard"]').clear()
+    cy.xpath("//div[@id='paymentMethod']").click()
+    cy.xpath("//div[@id='paymentMethod']//input[@name='card_number']/../label[@class='invalid']").should("be.visible")
+    cy.xpath('//input[@name="cvv_number"]').clear()
+    cy.xpath("//div[@id='paymentMethod']").click()
+    cy.xpath("//div[@id='paymentMethod']//input[@name='cvv_number']/../label[@class='invalid']").should("be.visible")
+
     cy.xpath('//input[@id="creditCard"]').type(CCnumber,{force:true})
+    cy.xpath('//input[@name="cvv_number"]').clear().type(CVS,{force:true})
+
+
     cy.xpath('//button[@id="pay_now_btn_ManualPayment"]').click() // click Pay Now
 
     // Tracking number and Order number

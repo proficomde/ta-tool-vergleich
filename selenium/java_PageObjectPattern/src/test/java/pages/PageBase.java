@@ -28,7 +28,7 @@ public class PageBase {
         explicitWait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    @FindBy(xpath = "//*[@id='menuCart']")
+    @FindBy(xpath = "//a[@id='shoppingCartLink']")
     WebElement menuCartLink;
     @FindBy(xpath = "//button[@name='save_to_cart']")
     WebElement addToCard;
