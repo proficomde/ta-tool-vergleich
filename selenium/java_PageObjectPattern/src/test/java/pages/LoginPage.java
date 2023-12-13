@@ -3,7 +3,6 @@ package pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
@@ -11,28 +10,29 @@ public class LoginPage extends PageBase{
     @FindBy(xpath = "//*[contains(@id, 'registration_btn')]")
     WebElement registrationButton;
 
-    @FindBy(xpath = "//input[@name='usernameRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='usernameRegisterPage']")
     WebElement usernameField;
-    @FindBy(xpath = "//input[@name='emailRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='emailRegisterPage']")
     WebElement emailField;
-    @FindBy(xpath = "//input[@name='passwordRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='passwordRegisterPage']")
     WebElement passwordField;
-    @FindBy(xpath = "//input[@name='confirm_passwordRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='confirm_passwordRegisterPage']")
     WebElement confirmPasswordField;
-    @FindBy(xpath = "//input[@name='first_nameRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='first_nameRegisterPage']")
     WebElement firstNameField;
-    @FindBy(xpath = "//input[@name='last_nameRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='last_nameRegisterPage']")
     WebElement lastNameField;
-    @FindBy(xpath = "//select[@name='countryListboxRegisterPage']")
+
+    @FindBy(xpath = "//div[@id='form']//select[@name='countryListboxRegisterPage']")
     WebElement countryField;
 
-    @FindBy(xpath = "//*[@name='cityRegisterPage']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='cityRegisterPage']")
     WebElement cityField;
 
-    @FindBy(xpath = "//input[@name='allowOffersPromotion']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='allowOffersPromotion']")
     WebElement checkboxPromotion;
 
-    @FindBy(xpath = "//input[@name='i_agree']")
+    @FindBy(xpath = "//div[@id='form']//input[@name='i_agree']")
     WebElement checkboxUsePrivacy;
 
     @FindBy(xpath = "//button[contains(@id, 'register_btn')]")
