@@ -1,5 +1,5 @@
 
-numberOfRuns = params.NUMBER_OF_RUNS?.isInteger ? params.NUMBER_OF_RUNS as Integer : 10
+numberOfRuns = params.NUMBER_OF_RUNS?.isInteger() ? params.NUMBER_OF_RUNS as Integer : 10
 def buildNumber = env.BUILD_NUMBER as int
 if (buildNumber >1) milestone (buildNumber -1)
 milestone(buildNumber)
