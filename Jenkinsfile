@@ -33,7 +33,7 @@ pipeline {
           when { expression { return params.RUN_SELENIUM_JAVA } } 
           steps {
             script {     
-              docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+              docker.image("maven:3.9.5").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
                 dir("selenium/java") {
                   sh "mvn test-compile"
                   for (int i = 0; i < numberOfRuns; i++) {
@@ -52,7 +52,7 @@ pipeline {
           when { expression { return params.RUN_SELENIUM_POP } } 
           steps {
             script {     
-              docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+              docker.image("maven:3.9.5").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
                 dir("selenium/java_PageObjectPattern") {
                   sh "mvn test-compile"
                   for (int i = 0; i < numberOfRuns; i++) {
@@ -95,7 +95,7 @@ pipeline {
           when { expression { return params.RUN_PLAYWRIGHT_JAVA } } 
           steps {
             script {
-              docker.image("maven:latest").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
+              docker.image("maven:3.9.5").inside("-v /var/run/docker.sock:/var/run/docker.sock -u 0:0 --privileged --network host") {
                 dir("playwright/java") {
                   sh 'mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"'
                   sh "mvn test-compile"
