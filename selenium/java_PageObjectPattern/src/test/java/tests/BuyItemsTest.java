@@ -88,7 +88,7 @@ public class BuyItemsTest extends TestBase{
         // checkout - select payment
         orderPaymentPage.selectMasterCreditButton();
         orderPaymentPage.fillCardDataFields("123456789123", "123", "04", "2031", "proficom");
-        orderPaymentPage.pause(1000);
+        //orderPaymentPage.pause(1000);
         orderPaymentPage.fillCardNumberCVVOneMoreTime("123456789123", "123");
         orderPaymentPage.clickOnPayNowButton();
         //orderPaymentPage.pause(2000);
