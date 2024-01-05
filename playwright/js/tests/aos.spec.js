@@ -1,7 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
-const BASE_URL = "http://advantage.proficom.de:8080/";
-const TAKE_SCREENSHOTS = true;
+//const BASE_URL = "http://advantage.proficom.de:8080/";
+const BASE_URL = "http://172.16.15.213:8080/"
+const TAKE_SCREENSHOTS = false;
 
 const PRODUCT_DATA = [
     ["HP ROAR PLUS WIRELESS SPEAKER", "BLUE", "2"],
@@ -10,20 +11,37 @@ const PRODUCT_DATA = [
 
 const TESTSTART_TIMESTAMP = Date.now();
 
+
+let beforeBrowserStartTS
+let beforeTestStartTS
+
 test.beforeEach(async ({ page }) => {
+    beforeBrowserStartTS = Date.now()
     await page.goto(BASE_URL);
     await page.waitForLoadState();
     console.log(`Time until initial page load: ${Date.now() - TESTSTART_TIMESTAMP} ms`);
 });
 
 test.afterEach(async ({ page }) => {
+    
+    let testStoppedTS = Date.now()
+    let testRunTimeWithBrowser = testStoppedTS - beforeBrowserStartTS
+    let testRunTime = testStoppedTS - beforeTestStartTS
+
+    //write times to text-file for later processing
+    console.log(`${testRunTimeWithBrowser}\t${testRunTime}`)
+    require('fs').appendFileSync("timings.csv", `${testRunTimeWithBrowser}\t${testRunTime}\n`, "utf-8")
+    
     await page.close();
     console.log(`Time until test finished: ${Date.now() - TESTSTART_TIMESTAMP} ms`);
+
+
+
 });
 
 
 test('orders a mouse and a speaker as new user', async ({ page }, testInfo) => {
-
+    beforeTestStartTS = Date.now()
     await test.step('Shopping cart should be empty', async () => {
         // Go to Shopping Cart
         await page.locator("//A[@id='shoppingCartLink']").click();

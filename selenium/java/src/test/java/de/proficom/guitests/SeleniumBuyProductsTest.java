@@ -30,9 +30,10 @@ import java.time.format.DateTimeFormatter;
 public class SeleniumBuyProductsTest {
 
 
-    static final String URL = "https://www.advantageonlineshopping.com/#/";
+    //static final String URL = "https://www.advantageonlineshopping.com/#/";
+    static final String URL = "http://172.16.15.213:8080/";
     static final boolean HEADLESS_MODE = true;
-    static final boolean TAKE_SCREENSHOTS = true;
+    static final boolean TAKE_SCREENSHOTS = false;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
@@ -48,14 +49,14 @@ public class SeleniumBuyProductsTest {
 
     @ClassRule
     public static BrowserWebDriverContainer chrome =
-        new BrowserWebDriverContainer(DockerImageName.parse("selenium/standalone-chrome:119.0"))
+        new BrowserWebDriverContainer<>(DockerImageName.parse("selenium/standalone-chrome:119.0"))
                     .withCapabilities(new ChromeOptions())
                     .withRecordingMode(VncRecordingMode.RECORD_ALL, file, VncRecordingFormat.MP4)
                     .withRecordingFileFactory(new DefaultRecordingFileFactory());
+            
 
     @BeforeClass
     public static void beforeClass() {
-        System.out.println(file.getAbsolutePath());
         beforeBrowserStartTS = System.currentTimeMillis();
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -107,15 +108,14 @@ public class SeleniumBuyProductsTest {
         driver.findElement(By.xpath("//li[contains(@*, 'attributesToShow')][.//*[contains(text(), 'SCROLLER TYPE')]]")).click();
         driver.findElement(By.xpath("//label[text()='Scroll Ball']/../input")).click();
         driver.findElement(By.xpath("//label[text()='Scroll Ring']/../input")).click();
-
-        if (TAKE_SCREENSHOTS) {
-            // We need to wait for JavaScript to apply the filter correctly
-            explicitWait.until(new ExpectedCondition<Boolean>() {
+        explicitWait.until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver driver) {
                     int elementCount = driver.findElements(By.xpath("//*[contains(@class, 'productName')]")).size();
                     if (elementCount == 2) return true; else return false;
                 }
-            });
+        });
+        if (TAKE_SCREENSHOTS) {
+            // We need to wait for JavaScript to apply the filter correctly
             takeScreenshot(driver, "screenshots/2_filter_applied.png");
         }
 
@@ -169,7 +169,7 @@ public class SeleniumBuyProductsTest {
 
         
 
-        driver.findElement(By.xpath(".//button[@id='registration_btn']")).click();
+        driver.findElement(By.xpath(".//button[contains(@id, 'registration_btn')]")).click();
         // Create username in format: pc<date><hour> //pc<YYMMDD><hhmmss>
 
         WebElement registrationForm = driver.findElement(By.xpath("//div[@id='form']"));
@@ -191,7 +191,7 @@ public class SeleniumBuyProductsTest {
             takeScreenshot(registrationForm, "screenshots/4.5_registrationForm_big.png");
         }
 
-        driver.findElement(By.xpath("//button[@id='register_btn']")).click();
+        driver.findElement(By.xpath("//button[contains(@id, 'register_btn')]")).click();
         // STEP 6.3 - Check if shipping details are correct
         // Important! Need to wait for element to be visible as underlying JavaScript will refresh page content!
         WebElement userNameLabel = explicitWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='userDetails']//label[text()='profi Worker']")));

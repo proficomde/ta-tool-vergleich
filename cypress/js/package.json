@@ -1,0 +1,19 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "- Cypress erkennt auf Betriebssystem verfügbare Browser\r - Zusätzlich Electron-Browser in Cypress integriert \r - Bei Ausführung von `cypress run` standardmäßig mit Electron und headless\r ### Screenshots\r - Wird `.screenshot()` auf ein Element außerhalb des Viewports angewendet, ist dieses im Screenshot nicht sichtbar\r ### XPath\r - Ehemals offizielle Plugins von Cypress [cypress-xpath](https://www.npmjs.com/package/cypress-xpath) und [@cypress/xpath](https://www.npmjs.com/package/@cypress/xpath) sind seit Juni 2023 deprecated\r - Für Projekt konnte cypress-xpath problemlos verwendet werden\r ### Recording\r - [Cypress Studio](https://docs.cypress.io/guides/references/cypress-studio) ist eine experimentelle Funktion und kann in Cypress-Konfiguration aktiviert werden\r - Bei Anwendung traten keine Probleme auf\r ### Command Line\r - Screenshots ein und ausschalten: `npx cypress run --env screenshot=true`\r - Basis-URL abändern: `npx cypress run --config baseUrl=https://example.com/my-app`",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.6.0",
+    "cypress-xpath": "^2.0.1"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
+}

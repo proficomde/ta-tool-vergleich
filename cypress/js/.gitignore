@@ -1,0 +1,12 @@
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Screenshot and videos
+cypress/videos
+cypress/screenshots

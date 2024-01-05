@@ -1,12 +1,15 @@
 package de.proficom.guitests;
 
 import com.microsoft.playwright.*;
+
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,25 +17,64 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public class BuyProductsTest {
 
-    static final String URL = "https://www.advantageonlineshopping.com/#/";
+    //static final String URL = "https://www.advantageonlineshopping.com/#/";
+    static final String URL = "http://172.16.15.213:8080/";
     static final boolean HEADLESS_MODE = true;
     static final boolean TAKE_SCREENSHOTS = false;
-    static final boolean TAKE_RECORDING = false;
+    static final boolean TAKE_RECORDING = true;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
+    static long beforeBrowserStartTS =0;
+    static long beforeTestStartTS = 0;
+    LocalDateTime timeNowTestStart = LocalDateTime.now();
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+    
+    Playwright playwright;
+    Browser browser;
+    BrowserContext browserContext;
+    Page page;
+
+
+    @AfterMethod 
+    public void cleanUp() {
+        long testStoppedTS = System.currentTimeMillis();
+        String testRunTimeWithBrowser = Long.toString(testStoppedTS - beforeBrowserStartTS);
+        String testRunTime = Long.toString(testStoppedTS - beforeTestStartTS);
+
+        
+        try {
+            Files.writeString(new File("timings.csv").toPath(), testRunTimeWithBrowser + "\t" + testRunTime + "\n", StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        page.close();
+        if (TAKE_RECORDING) {
+            browserContext.close();
+            String originalRecordingPath = page.video().path().toString();
+            File newRecordingFile = new File("recordings/", "screen_recording_"+timeNowTestStart.format(dateTimeFormatter)+".webm");
+            try {
+                Files.move(Paths.get(originalRecordingPath), newRecordingFile.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        browser.close();
+        playwright.close();
+
+    }
+
     @Test
     public void RunTestCase() {
-        LocalDateTime timeNowTestStart = LocalDateTime.now();
+        
+        beforeBrowserStartTS = System.currentTimeMillis();
 
-        Playwright playwright = Playwright.create();
-        Browser browser = playwright.chromium().launch(
+        playwright = Playwright.create();
+        browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(HEADLESS_MODE)
-        );
-
-        BrowserContext browserContext;
-        Page page;
-
+        ); 
         if (TAKE_RECORDING) {
             browserContext = browser.newContext(new Browser.NewContextOptions()
                     .setRecordVideoDir(Paths.get("recordings/"))
@@ -43,10 +85,11 @@ public class BuyProductsTest {
             page = browser.newPage();
         }
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
+        
 
         // STEP 0   - Go to home page
         page.navigate(URL);
+        beforeTestStartTS = System.currentTimeMillis();
 
         // STEP 1   - Check if shopping cart is empty
         page.locator("//a[@id='shoppingCartLink']").click();
@@ -66,10 +109,10 @@ public class BuyProductsTest {
         page.locator("//li[contains(@*, 'attributesToShow')][.//*[contains(text(), 'SCROLLER TYPE')]]").click();
         page.locator("//label[text()='Scroll Ball']/../input").check();
         page.locator("//label[text()='Scroll Ring']/../input").check();
-
+        page.waitForCondition(() -> page.locator("//*[contains(@class, 'productName')]").count() == 2);
         if (TAKE_SCREENSHOTS) {
             // We need to wait for JavaScript to apply the filter correctly
-            page.waitForCondition(() -> page.locator("//*[contains(@class, 'productName')]").count() == 2);
+            
             page.screenshot(new Page.ScreenshotOptions()
                     .setPath(Paths.get("screenshots/filter_applied_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
         }
@@ -118,7 +161,7 @@ public class BuyProductsTest {
         // STEP 6.1 - Go to checkout
         page.locator("//button[@id='checkOutButton']").click();
         // STEP 6.2 - Create new user
-        page.locator("//button[@id='registration_btn']").click();
+        page.locator("//button[contains(@id, 'registration_btn')]").click();
         // Create username in format: pc<date><hour> //pc<YYMMDD><hhmmss>
         LocalDateTime timeNowUserRegistration = LocalDateTime.now();
         page.locator("//input[@name='usernameRegisterPage']").fill("pc"+timeNowUserRegistration.format(dateTimeFormatter));
@@ -137,7 +180,7 @@ public class BuyProductsTest {
                     .setPath(Paths.get("screenshots/registration_summary_"+timeNowTestStart.format(dateTimeFormatter)+".png")));
         }
 
-        page.locator("//button[@id='register_btn']").click();
+        page.locator("//button[contains(@id, 'register_btn')]").click();
         // STEP 6.3 - Check if shipping details are correct
         Locator userNameLabel = page.locator("//div[@id='userDetails']//label[text()='profi Worker']");
 
@@ -168,7 +211,7 @@ public class BuyProductsTest {
             // Fallback cleanup of input in case the hacky method is redundant
             cardNumberInput.press("Backspace");
         }
-        cardNumberInput.pressSequentially("123456789123");
+        
 
         Locator cvvNumberInput = page.locator("//input[@name='cvv_number']");
         cvvNumberInput.click();
@@ -178,33 +221,35 @@ public class BuyProductsTest {
             cvvNumberInput.pressSequentially("1");
             cardNumberInput.press("Backspace");
         }
+
+
+        page.locator("//div[@id='paymentMethod']").click();
+        page.locator("//div[@id='paymentMethod']//input[@name='card_number']/../label[contains(@class, 'invalid')]").waitFor();
+        page.locator("//div[@id='paymentMethod']").click();
+        page.locator("//div[@id='paymentMethod']//input[@name='cvv_number']/../label[contains(@class, 'invalid')]").waitFor();
+
+        cardNumberInput.pressSequentially("123456789123");
         cvvNumberInput.pressSequentially("123");
+        cvvNumberInput.press("Control+A");
+        cvvNumberInput.pressSequentially("123");
+
+
 
         page.locator("//select[@name='mmListbox']").selectOption("04");
         page.locator("//select[@name='yyyyListbox']").selectOption("2031");
         page.locator("//input[@name='cardholder_name']").fill("proficom");
+
+        //fill out card number and cvv again
+
         // STEP 6.6 - Click 'NEXT'
         page.locator("//button[@id='pay_now_btn_ManualPayment']").click();
 
         // STEP 7   - Save and display order number and tracking number
+
+        page.locator("//div[@class!='ng-hide' and ./div/@id='orderPaymentSuccess']").waitFor();
         Locator trackingNumberLabel = page.locator("//label[@id='trackingNumberLabel' and string-length(text())>0]");
         Locator orderNumberLabel = page.locator("//label[@id='orderNumberLabel' and string-length(text())>0]");
         System.out.println("Tracking number: "+trackingNumberLabel.textContent());
         System.out.println("Order number: "+orderNumberLabel.textContent());
-
-        page.close();
-        if (TAKE_RECORDING) {
-            browserContext.close();
-            String originalRecordingPath = page.video().path().toString();
-            File newRecordingFile = new File("recordings/", "screen_recording_"+timeNowTestStart.format(dateTimeFormatter)+".webm");
-            try {
-                Files.move(Paths.get(originalRecordingPath), newRecordingFile.toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        browser.close();
-        playwright.close();
-
     }
 }
