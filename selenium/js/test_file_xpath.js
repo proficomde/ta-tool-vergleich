@@ -27,9 +27,11 @@ describe('AOS-TestScript', function() {
   before('Pull image and attach browser', async function() {
     this.timeout(120000)
     console.log("Before")
-    container = await new SeleniumContainer("selenium/standalone-chrome:119.0")
-      .withEnvironment({ SCREEN_WIDTH: 1920,  SCREEN_HEIGHT: 1080})
-      .withAddedCapabilities({"chromeOptions": {
+    container = await new SeleniumContainer("selenium/standalone-chrome:126.0")
+        
+    .withEnvironment({ SCREEN_WIDTH: 1920,  SCREEN_HEIGHT: 1080})
+    /*  
+    .withAddedCapabilities({"chromeOptions": {
         "binary": "",
         "args": [
         "--disable-gpu",
@@ -37,6 +39,7 @@ describe('AOS-TestScript', function() {
         ]
     }})
       .withRecording()
+      */
       .start();
 
     beforeBrowserStartTS = Date.now()
@@ -49,6 +52,24 @@ describe('AOS-TestScript', function() {
 
     await driver.manage().setTimeouts({implicit: 10000});
   });
+
+  after('Clean up', async function() {
+    this.timeout(60000)
+
+    let testStoppedTS = Date.now()
+    testRunTimeWithBrowser = testStoppedTS - beforeBrowserStartTS
+    testRunTime = testStoppedTS - beforeTestStartTS
+
+    //write times to text-file for later processing
+    console.log(`${testRunTimeWithBrowser}\t${testRunTime}`)
+    require('fs').appendFileSync("timings.csv", `${testRunTimeWithBrowser}\t${testRunTime}\n`, "utf-8")
+
+
+    await new Promise(r => setTimeout(r, 2000));
+    const stoppedContainer = await container.stop();
+    //await stoppedContainer.saveRecording("recording.mp4");
+  });
+
 
   it('Open Browser', async function() {
     console.log("run test")
@@ -234,22 +255,7 @@ describe('AOS-TestScript', function() {
   })
 
 
-  after('Clean up', async function() {
-    this.timeout(60000)
 
-    let testStoppedTS = Date.now()
-    testRunTimeWithBrowser = testStoppedTS - beforeBrowserStartTS
-    testRunTime = testStoppedTS - beforeTestStartTS
-
-    //write times to text-file for later processing
-    console.log(`${testRunTimeWithBrowser}\t${testRunTime}`)
-    require('fs').appendFileSync("timings.csv", `${testRunTimeWithBrowser}\t${testRunTime}\n`, "utf-8")
-
-
-    await new Promise(r => setTimeout(r, 2000));
-    const stoppedContainer = await container.stop();
-    await stoppedContainer.saveRecording("recording.mp4");
-  });
 
 
 })

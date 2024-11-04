@@ -23,7 +23,10 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'line',
+  reporter: [
+    ['line'],
+    ['html', { open: 'never' }]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 
   use: {
@@ -35,7 +38,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
 
     /* Record the test run */
-    video: 'on',
+    video: 'off',
   },
 
   expect: {
@@ -49,7 +52,7 @@ module.exports = defineConfig({
        name: 'chromium',
        use: { ...devices['Desktop Chrome'] },
      },
-/*
+     /*
      {
         name: 'firefox',
         use: { ...devices['Desktop Firefox'] },
@@ -59,17 +62,18 @@ module.exports = defineConfig({
        name: 'webkit',
        use: { ...devices['Desktop Safari'] },
      },
-*/
+     */
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
+    /* 
+    {
+       name: 'Mobile Chrome',
+       use: { ...devices['Pixel 5'] },
+     },
+     {
+       name: 'Mobile Safari',
+       use: { ...devices['iPhone 12'] },
+     },
+     */
     /* Test against branded browsers. */
     // {
     //   name: 'Microsoft Edge',

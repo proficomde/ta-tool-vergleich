@@ -54,7 +54,7 @@ describe('Advantage Online Shopping', () => {
 
     // Popular items
     cy.xpath('//article[@id="popular_items"]').scrollIntoView() // scroll to popular items
-    if (screenshot) {cy.screenshot({ capture: 'viewport'})}
+    if (screenshot) {cy.xpath('//article[@id="popular_items"]').screenshot({ capture: 'fullPage'})}
     cy.xpath('//div[./p/text()="HP ROAR PLUS WIRELESS SPEAKER"]/a').click({force: true}) // select speaker
     cy.xpath('//div[@class="plus"]').click({force: true}) // quantity 2
     cy.xpath('//button[@name="save_to_cart"]').click({force: true}) // add to cart
@@ -73,7 +73,7 @@ describe('Advantage Online Shopping', () => {
     cy.xpath('//*[contains(@id, "registration_btn")]').click()
     var name = generateUsername(username)
     cy.xpath('//input[@name="usernameRegisterPage"]').type(name)
-    if (screenshot) {cy.xpath('//input[@name="allowOffersPromotion"]/../input').screenshot()}
+    if (screenshot) {cy.screenshot({ capture: 'fullPage'})}
     cy.xpath('//input[@name="emailRegisterPage"]').click({force: true}).type(mail)
     cy.xpath('//input[@name="passwordRegisterPage"]').type(password)
     cy.xpath('//input[@name="confirm_passwordRegisterPage"]').click({force: true}).type(password)

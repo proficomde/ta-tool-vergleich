@@ -21,7 +21,7 @@ public class BuyProductsTest {
     static final String URL = "http://172.16.15.213:8080/";
     static final boolean HEADLESS_MODE = true;
     static final boolean TAKE_SCREENSHOTS = false;
-    static final boolean TAKE_RECORDING = true;
+    static final boolean TAKE_RECORDING = false;
     static final String PRODUCT1_NAME = "Kensington Orbit 72352 Trackball";
     static final String PRODUCT2_NAME = "HP ROAR PLUS WIRELESS SPEAKER";
 
